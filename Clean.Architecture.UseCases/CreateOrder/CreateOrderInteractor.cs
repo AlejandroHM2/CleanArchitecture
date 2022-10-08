@@ -6,36 +6,36 @@ using MediatR;
 
 namespace Clean.Architecture.UseCases.CreateOrder
 {
-    public class CreateOrderHandler : IRequestHandler<CreateOrderRequest, int>
+    public class CreateOrderInteractor : AsyncRequestHandler<CreateOrderInputPort>
     {
         readonly IOrderRepository orderRepository;
         readonly IOrderDetailRepository orderDetailRepository;
         readonly IUnitOfWork unitOfWork;
 
-        public CreateOrderHandler(
+        public CreateOrderInteractor(
             IOrderRepository orderRepository,
             IOrderDetailRepository orderDetailRepository,
             IUnitOfWork unitOfWork) =>
             (this.orderRepository, this.orderDetailRepository, this.unitOfWork) =
             (orderRepository, orderDetailRepository, unitOfWork);
 
-        public async Task<int> Handle(
-            CreateOrderRequest request, CancellationToken cancellationToken)
+        protected override async Task Handle(
+            CreateOrderInputPort request, CancellationToken cancellationToken)
         {
-            Order order = new Order()
+            Order order = new()
             {
-                CustomerId = request.CustomerId,
+                CustomerId = request.Data.CustomerId,
                 OrderDate = DateTime.Now,
-                ShipAddress = request.ShipAddress,
-                ShipCity = request.ShipCity,
-                ShipCountry = request.ShipCountry,
-                ShipPostalCode = request.ShipPostalCode,
+                ShipAddress = request.Data.ShipAddress,
+                ShipCity = request.Data.ShipCity,
+                ShipCountry = request.Data.ShipCountry,
+                ShipPostalCode = request.Data.ShipPostalCode,
                 ShippingType = ShippingType.Road,
                 DiscountType = DiscountType.Percentege,
                 Discount = 10
             };
             orderRepository.Create(order);
-            foreach (var detail in request.OrderDetails)
+            foreach (var detail in request.Data.OrderDetails)
             {
                 orderDetailRepository.Create(
                     new OrderDetail
@@ -46,6 +46,7 @@ namespace Clean.Architecture.UseCases.CreateOrder
                         UnitPrice = detail.UnitPrice
                     });
             }
+
             try
             {
                 await unitOfWork.SaveChangesAsync();
@@ -55,7 +56,7 @@ namespace Clean.Architecture.UseCases.CreateOrder
                 throw new GeneralException("Error al crear la orden",
                     ex.Message);
             }
-            return order.Id;
+            request.OutputPort.Handle(order.Id);
         }
     }
 }

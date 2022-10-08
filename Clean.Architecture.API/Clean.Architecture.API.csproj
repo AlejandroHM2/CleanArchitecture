@@ -4,13 +4,17 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>e775d2ce-fee0-4996-ba49-40ecb8d2526d</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Clean.Architecture.Controllers\Clean.Architecture.Controllers.csproj" />
     <ProjectReference Include="..\Clean.Architecture.IoC\Clean.Architecture.IoC.csproj" />
     <ProjectReference Include="..\Clean.Architecture.WebExceptionsPresenter\Clean.Architecture.WebExceptionsPresenter.csproj" />
   </ItemGroup>

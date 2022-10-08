@@ -5,18 +5,21 @@ using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers(options =>
-options.Filters.Add(new ApiExceptionFilterAttribute(
-    new Dictionary<Type, IExceptionHandler>
-    {
-        { typeof(GeneralException), new GeneralExceptionHandler() },
-        { typeof(ValidationException), new ValidationExceptionHandler() }
-    }
-    )));
+// Add services to the container.
+builder.Services.AddControllers(opt =>
+{
+    opt.Filters.Add(new ApiExceptionFilterAttribute(
+        new Dictionary<Type, IExceptionHandler>
+        {
+            { typeof(GeneralException), new GeneralExceptionHandler() },
+            { typeof(ValidationException), new ValidationExceptionHandler() },
+        }));
+});
 
-
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddCleanArchitectureServices(builder.Configuration);
 
 var app = builder.Build();
