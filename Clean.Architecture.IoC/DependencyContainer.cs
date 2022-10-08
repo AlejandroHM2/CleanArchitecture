@@ -23,7 +23,7 @@ namespace Clean.Architecture.IoC
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddMediatR(typeof(CreateOrderHandler));
+            services.AddMediatR(typeof(CreateOrderInteractor));
             services.AddValidatorsFromAssembly(typeof(CreateOrderValidator).Assembly);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
